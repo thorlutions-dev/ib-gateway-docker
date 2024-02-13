@@ -20,6 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: wusatosi/setup-gh@v1
+
       - name: Get Latest Version
         id: version
         run: |
@@ -42,11 +44,19 @@ jobs:
             echo "has_update=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Download
+      - name: Download ib-gateway
         if: ${{ steps.check-update.outputs.has_update == 'true' }}
         run: |
           download_url='https://download2.interactivebrokers.com/installers/ibgateway/${{ matrix.channel }}-standalone/ibgateway-${{ matrix.channel }}-standalone-linux-x64.sh'
           dest='ibgateway-${{ steps.version.outputs.build_version }}-standalone-linux-x64.sh'
+          curl -sSL "$download_url" --output "$dest"
+          sha256sum "$dest" > "${dest}.sha256"
+
+      - name: Download tws
+        if: ${{ steps.check-update.outputs.has_update == 'true' }}
+        run: |
+          download_url='https://download2.interactivebrokers.com/installers/tws/${{ matrix.channel }}-standalone/tws-${{ matrix.channel }}-standalone-linux-x64.sh'
+          dest='tws-${{ steps.version.outputs.build_version }}-standalone-linux-x64.sh'
           curl -sSL "$download_url" --output "$dest"
           sha256sum "$dest" > "${dest}.sha256"
 
@@ -58,7 +68,7 @@ jobs:
           gh release create 'ibgateway-${{ matrix.channel }}@${{ steps.version.outputs.build_version }}' \
             -t 'IB Gateway ${{ matrix.channel }} ${{ steps.version.outputs.build_version }}' \
             -n 'IB Gateway ${{ matrix.channel }} ${{ steps.version.outputs.build_version }} release files' \
-            ibgateway-*
+            ibgateway-* tws-*
 
       - name: Update ${{ matrix.channel }}
         if: ${{ steps.check-update.outputs.has_update == 'true' }}
