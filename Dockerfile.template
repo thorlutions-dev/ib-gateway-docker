@@ -69,6 +69,10 @@ RUN apt-get install --no-install-recommends --yes \
   libxi6 \
   libgtk2.0-bin \
   libgtk-3-0 \
+  libasound2 \
+  libnss3 \
+  libnspr4 \
+  libgbm1 \
   socat \
   x11vnc
 
