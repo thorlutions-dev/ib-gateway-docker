@@ -60,7 +60,7 @@ jobs:
           curl -sSL "$download_url" --output "$dest"
           sha256sum "$dest" > "${dest}.sha256"
 
-      - name: Create release
+      - name: Create ib-gateway release
         if: ${{ steps.check-update.outputs.has_update == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -68,7 +68,17 @@ jobs:
           gh release create 'ibgateway-${{ matrix.channel }}@${{ steps.version.outputs.build_version }}' \
             -t 'IB Gateway ${{ matrix.channel }} ${{ steps.version.outputs.build_version }}' \
             -n 'IB Gateway ${{ matrix.channel }} ${{ steps.version.outputs.build_version }} release files' \
-            ibgateway-* tws-*
+            ibgateway-*
+
+      - name: Create tws release
+        if: ${{ steps.check-update.outputs.has_update == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create 'tws-${{ matrix.channel }}@${{ steps.version.outputs.build_version }}' \
+            -t 'TWS ${{ matrix.channel }} ${{ steps.version.outputs.build_version }}' \
+            -n 'TWS ${{ matrix.channel }} ${{ steps.version.outputs.build_version }} release files' \
+            tws-*
 
       - name: Update ${{ matrix.channel }}
         if: ${{ steps.check-update.outputs.has_update == 'true' }}
