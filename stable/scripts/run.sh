@@ -14,7 +14,7 @@ envsubst < "${IBC_INI}.tmpl" > "${IBC_INI}"
 
 /root/scripts/fork_ports_delayed.sh &
 
-/root/ibc/scripts/ibcstart.sh "${TWS_MAJOR_VRSN}" -g \
+/root/ibc/scripts/ibcstart.sh "${TWS_MAJOR_VRSN}" \
      "--tws-path=${TWS_PATH}" \
      "--tws-settings-path=${TWS_SETTINGS_PATH}" \
      "--ibc-path=${IBC_PATH}" "--ibc-ini=${IBC_INI}" \
