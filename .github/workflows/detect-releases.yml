@@ -82,7 +82,9 @@ jobs:
 
       - name: Update ${{ matrix.channel }}
         if: ${{ steps.check-update.outputs.has_update == 'true' }}
-        run: ./update.sh ${{ matrix.channel }} ${{ steps.version.outputs.build_version }}
+        run: |
+          apt-get install -y envsubst
+          ./update.sh ${{ matrix.channel }} ${{ steps.version.outputs.build_version }}
 
       - name: Create PR
         if: ${{ steps.check-update.outputs.has_update == 'true' }}
